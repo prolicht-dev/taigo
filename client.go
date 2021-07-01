@@ -110,6 +110,7 @@ func (c *Client) Initialise() error {
 	c.User = &UserService{c, 0, "users"}
 	c.Webhook = &WebhookService{c, 0, "webhooks", "webhooklogs"}
 	c.Wiki = &WikiService{c, 0, "wiki"}
+	c.Attachment = &AttachmentService{c}
 
 	// Final steps
 	c.isInitialised = true
