@@ -34,18 +34,19 @@ type Client struct {
 	Request *RequestService
 
 	// Taiga Services
-	Auth      *AuthService
-	Epic      *EpicService
-	Issue     *IssueService
-	Milestone *MilestoneService
-	Project   *ProjectService
-	Resolver  *ResolverService
-	Stats     *StatsService
-	Task      *TaskService
-	UserStory *UserStoryService
-	User      *UserService
-	Webhook   *WebhookService
-	Wiki      *WikiService
+	Auth       *AuthService
+	Epic       *EpicService
+	Issue      *IssueService
+	Milestone  *MilestoneService
+	Project    *ProjectService
+	Resolver   *ResolverService
+	Stats      *StatsService
+	Task       *TaskService
+	UserStory  *UserStoryService
+	User       *UserService
+	Webhook    *WebhookService
+	Wiki       *WikiService
+	Attachment *AttachmentService
 }
 
 // MakeURL accepts an Endpoint URL and returns a compiled absolute URL
