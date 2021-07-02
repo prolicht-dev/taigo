@@ -7,12 +7,14 @@ TAIGO
 ![Taigo Banner](assets/banner_627x300.png "TAIGO Banner")
 
 
-
 # Description
 **Taigo** is a driver written in GO for [Taiga](https://github.com/taigaio) targeting to implement all publicly available API v1 endpoints. <br>
 Taiga is an Agile, Free and Open Source Project Management Tool.
 
 Should you have any ideas or recommendations, feel free to report it as an issue or open a pull request.
+
+## Known Limitations
+  * Some model members holding integers (i.e. `backlog_order`) were implemented using `int` instead of `int64` or rather `uint64` in some cases which results in runtime errors on machines with **32-bit arm** CPUs.
 
 # Integration
 Download **Taigo**:
@@ -180,9 +182,9 @@ newAttachment, err := client.Epic.CreateAttachment(&taiga.Attachment{ObjectID: 1
 
 ## Non-Standard Operations (Non-Standard)
 1. Clone Epic (with UserStories) -- To be implemented
-2. Clone Epic (without UserStories) -- To be implemented
+2. Clone Epic (without UserStories) -- ✔ Implemented
 3. Clone UserStory (with sub-tasks) -- To be implemented
-4. Clone UserStory (without sub-tasks) -- To be implemented
+4. Clone UserStory (without sub-tasks) -- ✔ Implemented
 5. Clone Sub-Task -- To be implemented
 6. Copy UserStory to another project [will lose comments and attachments] -- To be implemented
 
@@ -315,7 +317,6 @@ Should you have an idea which would cause non-backward compatibility, please ope
 For more details, see [TAIGO Contribution](CONTRIBUTION.md).
 
 ## Branching Strategy
-This package conforms to the stable HEAD philosophy.
   * **master** is <i>always</i> stable
   * **develop** is *not* <i>always</i> stable
 

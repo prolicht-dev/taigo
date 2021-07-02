@@ -67,6 +67,14 @@ func (us *UserStory) GetProject() int {
 	return us.Project
 }
 
+// UserStoryOrigin stores the bare minimum fields of the original User Story as a reference
+// https://github.com/taigaio/taiga-back/blob/886ef47d0621388a11aeea61a269f00d13d32f8d/taiga/projects/userstories/serializers.py#L34
+type UserStoryOrigin struct {
+	ID      int    `json:"id,omitempty"`
+	Ref     int    `json:"ref,omitempty"`
+	Subject string `json:"subject,omitempty"`
+}
+
 // UserStoryDetailLIST => https://taigaio.github.io/taiga-doc/dist/api.html#object-userstory-detail-list
 type UserStoryDetailLIST []struct {
 	AssignedTo          int                       `json:"assigned_to,omitempty"`
@@ -97,8 +105,8 @@ type UserStoryDetailLIST []struct {
 	MilestoneName       string                    `json:"milestone_name,omitempty"`
 	MilestoneSlug       string                    `json:"milestone_slug,omitempty"`
 	ModifiedDate        time.Time                 `json:"modified_date,omitempty"`
-	OriginIssue         int                       `json:"origin_issue,omitempty"`
-	OriginTask          int                       `json:"origin_task,omitempty"`
+	OriginIssue         *UserStoryOrigin          `json:"origin_issue,omitempty"`
+	OriginTask          *UserStoryOrigin          `json:"origin_task,omitempty"`
 	Owner               int                       `json:"owner,omitempty"`
 	OwnerExtraInfo      OwnerExtraInfo            `json:"owner_extra_info,omitempty"`
 	Points              AgilePoints               `json:"points,omitempty"`
@@ -117,7 +125,7 @@ type UserStoryDetailLIST []struct {
 	TotalPoints         float64                   `json:"total_points,omitempty"`
 	TotalVoters         int                       `json:"total_voters,omitempty"`
 	TotalWatchers       int                       `json:"total_watchers,omitempty"`
-	TribeGig            interface{}               `json:"tribe_gig,omitempty"`
+	TribeGig            TribeGig                  `json:"tribe_gig,omitempty"`
 	Version             int                       `json:"version,omitempty"`
 	Watchers            []int                     `json:"watchers,omitempty"`
 }
@@ -176,8 +184,8 @@ type UserStoryDetail struct {
 			Subject string `json:"subject,omitempty"`
 		} `json:"previous,omitempty"`
 	} `json:"neighbors,omitempty"`
-	OriginIssue      interface{}           `json:"origin_issue,omitempty"`
-	OriginTask       interface{}           `json:"origin_task,omitempty"`
+	OriginIssue      *UserStoryOrigin      `json:"origin_issue,omitempty"`
+	OriginTask       *UserStoryOrigin      `json:"origin_task,omitempty"`
 	Owner            int                   `json:"owner,omitempty"`
 	OwnerExtraInfo   OwnerExtraInfo        `json:"owner_extra_info,omitempty"`
 	Points           AgilePoints           `json:"points,omitempty"`
@@ -196,7 +204,7 @@ type UserStoryDetail struct {
 	TotalPoints      float64               `json:"total_points,omitempty"`
 	TotalVoters      int                   `json:"total_voters,omitempty"`
 	TotalWatchers    int                   `json:"total_watchers,omitempty"`
-	TribeGig         interface{}           `json:"tribe_gig,omitempty"`
+	TribeGig         TribeGig              `json:"tribe_gig,omitempty"`
 	Version          int                   `json:"version,omitempty"`
 	Watchers         []int                 `json:"watchers,omitempty"`
 }
@@ -229,8 +237,8 @@ type UserStoryDetailGET struct {
 	Epics               []EpicMinimal             `json:"epics"`
 	ExternalReference   []string                  `json:"external_reference"`
 	FinishDate          time.Time                 `json:"finish_date"`
-	GeneratedFromIssue  interface{}               `json:"generated_from_issue"`
-	GeneratedFromTask   interface{}               `json:"generated_from_task"`
+	GeneratedFromIssue  int                       `json:"generated_from_issue"`
+	GeneratedFromTask   int                       `json:"generated_from_task"`
 	ID                  int                       `json:"id"`
 	IsBlocked           bool                      `json:"is_blocked"`
 	IsClosed            bool                      `json:"is_closed"`
@@ -242,8 +250,8 @@ type UserStoryDetailGET struct {
 	MilestoneSlug       string                    `json:"milestone_slug"`
 	ModifiedDate        time.Time                 `json:"modified_date"`
 	Neighbors           Neighbors                 `json:"neighbors"`
-	OriginIssue         interface{}               `json:"origin_issue"`
-	OriginTask          interface{}               `json:"origin_task"`
+	OriginIssue         int                       `json:"origin_issue"`
+	OriginTask          *UserStoryOrigin          `json:"origin_task"`
 	Owner               int                       `json:"owner"`
 	OwnerExtraInfo      OwnerExtraInfo            `json:"owner_extra_info"`
 	Points              Points                    `json:"points"`
@@ -262,7 +270,7 @@ type UserStoryDetailGET struct {
 	TotalPoints         float64                   `json:"total_points"`
 	TotalVoters         int                       `json:"total_voters"`
 	TotalWatchers       int                       `json:"total_watchers"`
-	TribeGig            interface{}               `json:"tribe_gig"`
+	TribeGig            TribeGig                  `json:"tribe_gig"`
 	Version             int                       `json:"version"`
 	Watchers            []int                     `json:"watchers"`
 }

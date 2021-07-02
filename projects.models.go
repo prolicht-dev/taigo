@@ -16,41 +16,48 @@ func genericToProjects(anyProjectObjectSlice interface{}) []Project {
 	return payloadProjectsSlice
 }
 
-// ProjectPoints represeints the registered Agile Points to a project
+// ProjectPoints represents the registered Agile Points to a project
 type ProjectPoints struct {
 	Order     int      `json:"order"`
 	Name      string   `json:"name"`
 	ID        int      `json:"id"`
 	ProjectID int      `json:"project_id"`
-	Value     *float32 `json:"value"`
+	Value     *float64 `json:"value"`
 }
+
+// ProjectTagsColors is a [string/string] key/value pair to represent project-wide Tag/Colour combinations
+// JSON Representation example:
+// {
+// 	"tags_colors": {
+// 		"high": "#D35163",
+// 		"normal": "#78D351"
+//  },
+// }
+type ProjectTagsColors map[string]string
 
 // IsValueNil returns true if ProjectPoints.Value is nil
 func (pp ProjectPoints) IsValueNil() bool {
-	if pp.Value == nil {
-		return true
-	}
-	return false
+	return pp.Value == nil
 }
 
 // Project is a subset of all possible Project type variants
 //
 // https://taigaio.github.io/taiga-doc/dist/api.html#projects-create
 type Project struct {
-	ID                        int     `json:"id"`
-	Slug                      string  `json:"slug"`
-	CreationTemplate          int     `json:"creation_template"`
-	Description               string  `json:"description"`
-	IsBacklogActivated        bool    `json:"is_backlog_activated"`
-	IsIssuesActivated         bool    `json:"is_issues_activated"`
-	IsKanbanActivated         bool    `json:"is_kanban_activated"`
-	IsPrivate                 bool    `json:"is_private"`
-	IsWikiActivated           bool    `json:"is_wiki_activated"`
-	Name                      string  `json:"name"`
-	TotalMilestones           int     `json:"total_milestones"`
-	TotalStoryPoints          float64 `json:"total_story_points"`
-	Videoconferences          string  `json:"videoconferences"`
-	VideoconferencesExtraData string  `json:"videoconferences_extra_data"`
+	ID                        int     `json:"id,omitempty"`
+	Slug                      string  `json:"slug,omitempty"`
+	CreationTemplate          int     `json:"creation_template,omitempty"`
+	Description               string  `json:"description,omitempty"`
+	IsBacklogActivated        bool    `json:"is_backlog_activated,omitempty"`
+	IsIssuesActivated         bool    `json:"is_issues_activated,omitempty"`
+	IsKanbanActivated         bool    `json:"is_kanban_activated,omitempty"`
+	IsPrivate                 bool    `json:"is_private,omitempty"`
+	IsWikiActivated           bool    `json:"is_wiki_activated,omitempty"`
+	Name                      string  `json:"name,omitempty"`
+	TotalMilestones           int     `json:"total_milestones,omitempty"`
+	TotalStoryPoints          float64 `json:"total_story_points,omitempty"`
+	Videoconferences          string  `json:"videoconferences,omitempty"`
+	VideoconferencesExtraData string  `json:"videoconferences_extra_data,omitempty"`
 	ProjectsLIST              *ProjectsList
 	ProjectDETAIL             *ProjectDetail
 }
@@ -62,6 +69,15 @@ func (p *ProjectDetail) AsProject() (*Project, error) {
 	return project, nil
 }
 
+// AsProjects packs the returned ProjectsLIST into a generic Project []struct
+func (p *ProjectsList) AsProjects() ([]Project, error) {
+	projects := genericToProjects(&p)
+	for i := 0; i < len(projects); i++ {
+		projects[i].ProjectsLIST = p
+	}
+	return projects, nil
+}
+
 // ProjectDetail -> https://taigaio.github.io/taiga-doc/dist/api.html#object-project-detail
 type ProjectDetail struct {
 	AnonPermissions           []string                             `json:"anon_permissions"`
@@ -71,7 +87,7 @@ type ProjectDetail struct {
 	DefaultEpicStatus         int                                  `json:"default_epic_status"`
 	DefaultIssueStatus        int                                  `json:"default_issue_status"`
 	DefaultIssueType          int                                  `json:"default_issue_type"`
-	DefaultPoints             int                                  `json:"default_points"`
+	DefaultPoints             float64                              `json:"default_points"`
 	DefaultPriority           int                                  `json:"default_priority"`
 	DefaultSeverity           int                                  `json:"default_severity"`
 	DefaultTaskStatus         int                                  `json:"default_task_status"`
@@ -120,8 +136,8 @@ type ProjectDetail struct {
 	Roles                     []roles                              `json:"roles"`
 	Severities                []severity                           `json:"severities"`
 	Slug                      string                               `json:"slug"`
-	Tags                      Tags                                 `json:"tags"`
-	TagsColors                TagsColors                           `json:"tags_colors"`
+	Tags                      []string                             `json:"tags"`
+	TagsColors                ProjectTagsColors                    `json:"tags_colors"`
 	TaskCustomAttributes      []TaskCustomAttributeDefinition      `json:"task_custom_attributes"`
 	TaskDuedates              []taskDueDates                       `json:"task_duedates"`
 	TaskStatuses              []taskStatus                         `json:"task_statuses"`
@@ -332,62 +348,62 @@ type UserStoryCustomAttributeDefinition struct {
 
 // ProjectsList -> https://taigaio.github.io/taiga-doc/dist/api.html#object-project-list-entry
 type ProjectsList []struct {
-	IsEpicsActivated          bool         `json:"is_epics_activated"`
-	IsIssuesActivated         bool         `json:"is_issues_activated"`
-	LogoSmallURL              string       `json:"logo_small_url"`
-	LookingForPeopleNote      string       `json:"looking_for_people_note"`
-	TotalActivityLastMonth    int          `json:"total_activity_last_month"`
-	DefaultEpicStatus         int          `json:"default_epic_status"`
-	DefaultSeverity           int          `json:"default_severity"`
-	IsKanbanActivated         bool         `json:"is_kanban_activated"`
-	Videoconferences          string       `json:"videoconferences"`
-	ModifiedDate              time.Time    `json:"modified_date"`
-	Name                      string       `json:"name"`
-	IsLookingForPeople        bool         `json:"is_looking_for_people"`
-	Description               string       `json:"description"`
-	TotalClosedMilestones     int          `json:"total_closed_milestones"`
-	DefaultUsStatus           int          `json:"default_us_status"`
-	TotalFansLastMonth        int          `json:"total_fans_last_month"`
-	TotalMilestones           int          `json:"total_milestones"`
-	MyPermissions             []string     `json:"my_permissions"`
-	Members                   []int        `json:"members"`
-	Owner                     Owner        `json:"owner"`
-	NotifyLevel               int          `json:"notify_level"`
-	TagsColors                []TagsColors `json:"tags_colors,omitempty"`
-	IsWikiActivated           bool         `json:"is_wiki_activated"`
-	VideoconferencesExtraData string       `json:"videoconferences_extra_data"`
-	CreatedDate               time.Time    `json:"created_date"`
-	TotalWatchers             int          `json:"total_watchers"`
-	IAmAdmin                  bool         `json:"i_am_admin"`
-	DefaultIssueStatus        int          `json:"default_issue_status"`
-	CreationTemplate          int          `json:"creation_template"`
-	TotalStoryPoints          int          `json:"total_story_points"`
-	AnonPermissions           []string     `json:"anon_permissions"`
-	TotalFans                 int          `json:"total_fans"`
-	IsBacklogActivated        bool         `json:"is_backlog_activated"`
-	ID                        int          `json:"id"`
-	BlockedCode               string       `json:"blocked_code"`
-	IsPrivate                 bool         `json:"is_private"`
-	IsWatcher                 bool         `json:"is_watcher"`
-	PublicPermissions         []string     `json:"public_permissions"`
-	IsFan                     bool         `json:"is_fan"`
-	TotalFansLastWeek         int          `json:"total_fans_last_week"`
-	TotalActivityLastYear     int          `json:"total_activity_last_year"`
-	DefaultPriority           int          `json:"default_priority"`
-	IsContactActivated        bool         `json:"is_contact_activated"`
-	Slug                      string       `json:"slug"`
-	LogoBigURL                string       `json:"logo_big_url"`
-	IsFeatured                bool         `json:"is_featured"`
-	IAmOwner                  bool         `json:"i_am_owner"`
-	TotalActivityLastWeek     int          `json:"total_activity_last_week"`
-	Tags                      Tags         `json:"tags"`
-	DefaultIssueType          int          `json:"default_issue_type"`
-	TotalsUpdatedDatetime     time.Time    `json:"totals_updated_datetime"`
-	TotalActivity             int          `json:"total_activity"`
-	IAmMember                 bool         `json:"i_am_member"`
-	TotalFansLastYear         int          `json:"total_fans_last_year"`
-	DefaultPoints             int          `json:"default_points"`
-	DefaultTaskStatus         int          `json:"default_task_status"`
+	IsEpicsActivated          bool              `json:"is_epics_activated"`
+	IsIssuesActivated         bool              `json:"is_issues_activated"`
+	LogoSmallURL              string            `json:"logo_small_url"`
+	LookingForPeopleNote      string            `json:"looking_for_people_note"`
+	TotalActivityLastMonth    int               `json:"total_activity_last_month"`
+	DefaultEpicStatus         int               `json:"default_epic_status"`
+	DefaultSeverity           int               `json:"default_severity"`
+	IsKanbanActivated         bool              `json:"is_kanban_activated"`
+	Videoconferences          string            `json:"videoconferences"`
+	ModifiedDate              time.Time         `json:"modified_date"`
+	Name                      string            `json:"name"`
+	IsLookingForPeople        bool              `json:"is_looking_for_people"`
+	Description               string            `json:"description"`
+	TotalClosedMilestones     int               `json:"total_closed_milestones"`
+	DefaultUsStatus           int               `json:"default_us_status"`
+	TotalFansLastMonth        int               `json:"total_fans_last_month"`
+	TotalMilestones           int               `json:"total_milestones"`
+	MyPermissions             []string          `json:"my_permissions"`
+	Members                   []int             `json:"members"`
+	Owner                     Owner             `json:"owner"`
+	NotifyLevel               int               `json:"notify_level"`
+	TagsColors                ProjectTagsColors `json:"tags_colors"`
+	IsWikiActivated           bool              `json:"is_wiki_activated"`
+	VideoconferencesExtraData string            `json:"videoconferences_extra_data"`
+	CreatedDate               time.Time         `json:"created_date"`
+	TotalWatchers             int               `json:"total_watchers"`
+	IAmAdmin                  bool              `json:"i_am_admin"`
+	DefaultIssueStatus        int               `json:"default_issue_status"`
+	CreationTemplate          int               `json:"creation_template"`
+	TotalStoryPoints          float64           `json:"total_story_points"`
+	AnonPermissions           []string          `json:"anon_permissions"`
+	TotalFans                 int               `json:"total_fans"`
+	IsBacklogActivated        bool              `json:"is_backlog_activated"`
+	ID                        int               `json:"id"`
+	BlockedCode               string            `json:"blocked_code"`
+	IsPrivate                 bool              `json:"is_private"`
+	IsWatcher                 bool              `json:"is_watcher"`
+	PublicPermissions         []string          `json:"public_permissions"`
+	IsFan                     bool              `json:"is_fan"`
+	TotalFansLastWeek         int               `json:"total_fans_last_week"`
+	TotalActivityLastYear     int               `json:"total_activity_last_year"`
+	DefaultPriority           int               `json:"default_priority"`
+	IsContactActivated        bool              `json:"is_contact_activated"`
+	Slug                      string            `json:"slug"`
+	LogoBigURL                string            `json:"logo_big_url"`
+	IsFeatured                bool              `json:"is_featured"`
+	IAmOwner                  bool              `json:"i_am_owner"`
+	TotalActivityLastWeek     int               `json:"total_activity_last_week"`
+	Tags                      []string          `json:"tags"`
+	DefaultIssueType          int               `json:"default_issue_type"`
+	TotalsUpdatedDatetime     time.Time         `json:"totals_updated_datetime"`
+	TotalActivity             int               `json:"total_activity"`
+	IAmMember                 bool              `json:"i_am_member"`
+	TotalFansLastYear         int               `json:"total_fans_last_year"`
+	DefaultPoints             float64           `json:"default_points"`
+	DefaultTaskStatus         int               `json:"default_task_status"`
 }
 
 // ProjectModulesConfiguration -> https://taigaio.github.io/taiga-doc/dist/api.html#object-project-modules-detail
