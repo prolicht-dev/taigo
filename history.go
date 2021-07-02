@@ -34,7 +34,7 @@ func (s *HistoryService) CreateHistoryEntry(history *History, entity TaigaBaseOb
 		return err
 	}
 
-	_, err = s.client.Request.Patch(url, map[string]interface{}{"version": baseObj["version"], "comment": history.User.Username + " [" + history.EditCommentDate.String() + "]:\n" + history.Comment}, nil)
+	_, err = s.client.Request.Patch(url, map[string]interface{}{"version": baseObj["version"], "comment": history.User.Username + " [" + history.CreatedAt.String() + "]:\n" + history.Comment}, nil)
 	return err
 }
 
