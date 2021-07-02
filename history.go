@@ -28,13 +28,13 @@ func (s *HistoryService) CreateHistoryEntry(history *History, entity TaigaBaseOb
 
 	url := s.client.MakeURL(string(endpoint), strconv.Itoa(entity.GetID()))
 
-	var baseObj TaigaBaseObject
+	var baseObj map[string]interface{}
 	_, err := s.client.Request.Get(url, &baseObj)
 	if err != nil {
-		// handle err
+		return err
 	}
 
-	_, err = s.client.Request.Patch(url, map[string]interface{}{"version": baseObj.GetVersion(), "comment": history.Comment}, nil)
+	_, err = s.client.Request.Patch(url, map[string]interface{}{"version": baseObj["version"], "comment": history.Comment}, nil)
 	return err
 }
 
