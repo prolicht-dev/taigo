@@ -47,6 +47,25 @@ type Attachment struct {
 	filePath         string    // For package-internal use only
 }
 
+type History struct {
+	Comment           string                 `json:"comment,omitempty"`
+	CommentHTML       string                 `json:"comment_html,omitempty"`
+	CreatedAt         time.Time              `json:"created_at,omitempty"`
+	DeleteCommentDate time.Time              `json:"delete_comment_date,omitempty"`
+	DeleteCommentUser int                    `json:"delete_comment_user,omitempty"`
+	Diff              map[string]interface{} `json:"diff,omitempty"`
+	EditCommentDate   time.Time              `json:"edit_comment_date,omitempty"`
+	ID                string                 `json:"id,omitempty"`
+	IsHidden          bool                   `json:"is_hidden,omitempty"`
+	IsSnapshot        bool                   `json:"is_snapshot,omitempty"`
+	Key               string                 `json:"key,omitempty"`
+	Snapshot          string                 `json:"snapshot,omitempty"`
+	Type              int                    `json:"type,omitempty"`
+	User              User                   `json:"user,omitempty"`
+	Values            map[string]interface{} `json:"values,omitempty"`
+	ValuesDiff        map[string]interface{} `json:"values_diff,omitempty"`
+}
+
 // GenericObjectAttachment represents an array of minimal attachment details
 // This array is filled when the `IncludeAttachments` query parameter is true
 type GenericObjectAttachment struct {
