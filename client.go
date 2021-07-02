@@ -47,6 +47,7 @@ type Client struct {
 	Webhook    *WebhookService
 	Wiki       *WikiService
 	Attachment *AttachmentService
+	History    *HistoryService
 }
 
 // Endpoint enums
@@ -121,6 +122,7 @@ func (c *Client) Initialise() error {
 	c.Webhook = &WebhookService{c, 0, "webhooks", "webhooklogs"}
 	c.Wiki = &WikiService{c, 0, "wiki"}
 	c.Attachment = &AttachmentService{c}
+	c.History = &HistoryService{c}
 
 	// Final steps
 	c.isInitialised = true
