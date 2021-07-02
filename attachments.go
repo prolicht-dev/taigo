@@ -3,14 +3,6 @@ package taigo
 type AttachmentService struct {
 	client *Client
 }
-type Endpoint string
-
-const (
-	UserStoryEndpoint Endpoint = "userstories"
-	IssueEndpoint     Endpoint = "issues"
-	TaskEndpoint      Endpoint = "tasks"
-	EpicEndpoint      Endpoint = "epics"
-)
 
 // GetAttachment retrieves a attachment by its ID from a specified endpoint => https://taigaio.github.io/taiga-doc/dist/api.html#tasks-get-attachment
 func (s *AttachmentService) GetAttachment(attachmentID int, endpoint Endpoint) (*Attachment, error) {

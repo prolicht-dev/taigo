@@ -49,6 +49,16 @@ type Client struct {
 	Attachment *AttachmentService
 }
 
+// Endpoint enums
+type Endpoint string
+
+const (
+	UserStoryEndpoint Endpoint = "userstories"
+	IssueEndpoint     Endpoint = "issues"
+	TaskEndpoint      Endpoint = "tasks"
+	EpicEndpoint      Endpoint = "epics"
+)
+
 // MakeURL accepts an Endpoint URL and returns a compiled absolute URL
 //
 // For example:
