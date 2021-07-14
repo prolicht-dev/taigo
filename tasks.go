@@ -119,3 +119,27 @@ func (s *TaskService) CreateAttachment(attachment *Attachment, task *Task) (*Att
 	url := s.client.MakeURL(s.Endpoint, "attachments")
 	return newfileUploadRequest(s.client, url, attachment, task)
 }
+
+// Edit sends a PATCH request to edit a Task
+// Available Meta: TaskDetail
+func (s *TaskService) Edit(task *Task) (*Task, error) {
+	url := s.client.MakeURL(s.Endpoint, strconv.Itoa(task.ID))
+	var responseTask TaskDetail
+
+	if task.ID == 0 {
+		return nil, errors.New("passed Task does not have an ID yet. Does it exist?")
+	}
+
+	// Taiga OCC
+	remoteTask, err := s.Get(task)
+	if err != nil {
+		return nil, err
+	}
+
+	task.Version = remoteTask.Version
+	_, err = s.client.Request.Patch(url, &task, &responseTask)
+	if err != nil {
+		return nil, err
+	}
+	return responseTask.AsTask()
+}
